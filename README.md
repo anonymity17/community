@@ -24,6 +24,20 @@ JDK，Maven
 git clone https://github.com/codedrinker/community.git
 ````
 3. 运行数据库脚本，创建本地数据库
+```mysql
+create table users
+(
+   id int auto_increment,
+   name varchar(100),
+   account_id varchar(100),
+   token char(36),
+   gmt_create bigint,
+   gmt_modified bigint,
+   constraint USERS_PK
+      primary key (id)
+);
+```
+如果别人对项目进行修改，应该先git pull
 ```sh
 mvn flyway:migrate
 ```
@@ -132,3 +146,4 @@ mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 | --- | --- |
 |  码匠笔记  |  fit8295 |
 |  ![](https://mawen-cdn.cn-bj.ufileos.com/wxdyh-qr.jpeg?iopcmd=thumbnail&type=1&scale=50)   |   ![](http://mawen-cdn.cn-bj.ufileos.com/wechat.jpeg?iopcmd=thumbnail&type=1&scale=50)  |
+不用sessionid，我们自己写一个token来用

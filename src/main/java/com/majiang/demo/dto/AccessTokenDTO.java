@@ -1,4 +1,5 @@
 package com.majiang.demo.dto;
+//网络中的
 //dto数据传输模型，超过五个参数传输，封装
 public class AccessTokenDTO {
     private String client_id;
