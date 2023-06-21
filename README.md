@@ -147,3 +147,10 @@ mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 |  码匠笔记  |  fit8295 |
 |  ![](https://mawen-cdn.cn-bj.ufileos.com/wxdyh-qr.jpeg?iopcmd=thumbnail&type=1&scale=50)   |   ![](http://mawen-cdn.cn-bj.ufileos.com/wechat.jpeg?iopcmd=thumbnail&type=1&scale=50)  |
 不用sessionid，我们自己写一个token来用
+文件index.xml,右键git-》revert，会将更改后的文件还原回去
+ctrl+w 不停的选中上一层
+ctrl+F12 看到一个类中的全部方法属性
+ctrl + shift + out +? 在里面设置运行期间也可以自动部署
+可以在网页中-》检查-》元素-》样式：更改，可以预览后觉得合适再回到项目中更改
+网页中-》检查-》控制台：输入$,输出为：ƒ (e,t){return new k.fn.init(e,t)} 表示调用成功jquery；
+    可以$(".main")来查找main
