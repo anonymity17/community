@@ -149,8 +149,18 @@ mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 不用sessionid，我们自己写一个token来用
 文件index.xml,右键git-》revert，会将更改后的文件还原回去
 ctrl+w 不停的选中上一层
-ctrl+F12 看到一个类中的全部方法属性
+ctrl+F12 展示一个类中的全部方法列表
+Ctrl+alt+B 看到一个类的全部子类
 ctrl + shift + out +? 在里面设置运行期间也可以自动部署
+ctrl +E 切换到最近使用的窗口
+ctrl+shift+上/下 替换位置
+ctrl + d 自动在下方复制出一行
+ctrl +Alt + <- 回到上一次编辑的位置
+ctrl + n 搜索，可直接定位问道代码的某一行
+出现错误回到历史版本,右键-》git-》revert
+选中项目回到历史版本,右键-》git-》show history
+    没有git 使用local history
+调试中新增端点，左边框最新的请求-》右键Drop Frame，就会把请求栈中的请求关掉=》点击执行（绿色三角形）
 可以在网页中-》检查-》元素-》样式：更改，可以预览后觉得合适再回到项目中更改
 网页中-》检查-》控制台：输入$,输出为：ƒ (e,t){return new k.fn.init(e,t)} 表示调用成功jquery；
     可以$(".main")来查找main

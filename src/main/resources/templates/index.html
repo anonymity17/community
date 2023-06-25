@@ -16,7 +16,7 @@
     <div class="row">
         <!--栅格系统-->
         <!--大屏幕两边宽度为3:1，即左边这个为9（总宽度为12）；中，小，超小都是全屏=12-->
-        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" th:if="${pagination != null}">
             <!--一个添加图标，右边是目标名称-->
             <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 发现 </h2>
             <hr>

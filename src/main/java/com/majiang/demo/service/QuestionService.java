@@ -43,6 +43,8 @@ public class QuestionService {
         }
 
         Integer offset = size * (page - 1);
+        if (offset < 0) return paginationDTOS;
+        System.out.println("offset"+offset);
         //获取所有的question目录
         List<Question> questions = questionMapper.list(offset, size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
@@ -56,8 +58,6 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-
-
 //        return questionDTOList;
         paginationDTOS.setQuestions(questionDTOList);
         return paginationDTOS;
@@ -95,5 +95,29 @@ public class QuestionService {
 //        return questionDTOList;
         paginationDTOS.setQuestions(questionDTOList);
         return paginationDTOS;
+    }
+
+    public QuestionDTO getById(Integer id) {
+//        QuestionMapper自然是处理question这个表的，返回questionDTO当然不好了
+//        因此还是使用Question+User的方式(QuestionDTO就是包含这两个)
+        Question question = questionMapper.getById(id);
+        User user = userMapper.findById(question.getCreator());
+        QuestionDTO questionDTO = new QuestionDTO();
+        BeanUtils.copyProperties(question,questionDTO);
+        questionDTO.setUser(user);
+        return questionDTO;
+    }
+
+    public void createOrUpdate(Question question) {
+        if(question.getId() == null){
+            //表示这是一个新的发布问题，直接插入数据即可
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }else{
+            //表示这是一个编辑问题操作，更新数据库即可
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
     }
 }
