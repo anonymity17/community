@@ -2,6 +2,8 @@ package com.majiang.demo.service;
 
 import com.majiang.demo.dto.PaginationDTO;
 import com.majiang.demo.dto.QuestionDTO;
+import com.majiang.demo.exception.CustomizeErrorCode;
+import com.majiang.demo.exception.CustomizeException;
 import com.majiang.demo.mapper.QuestionMapper;
 import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.Question;
@@ -46,7 +48,6 @@ public class QuestionService {
 
         Integer offset = size * (page - 1);
         if (offset < 0) return paginationDTOS;
-        System.out.println("offset"+offset);
         //获取所有的question目录
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(offset,size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
@@ -84,15 +85,13 @@ public class QuestionService {
         if (page > paginationDTOS.getTotalPage()){
             page = paginationDTOS.getTotalPage();
         }
-        System.out.println("page"+page);
-        System.out.println("size"+size);
+
         Integer offset = size * (page - 1);
         //获取所有的question目录,(查询我的所有问题，也就是将userId传进入)
         QuestionExample example1 = new QuestionExample();
         example1.createCriteria()
                 .andCreatorEqualTo(userId);
         List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1,new RowBounds(offset,size));
-        System.out.println("questions"+ questions);
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         //遍历所有的question，根据每条数据中的id去查询user
@@ -115,6 +114,10 @@ public class QuestionService {
 //        QuestionMapper自然是处理question这个表的，返回questionDTO当然不好了
 //        因此还是使用Question+User的方式(QuestionDTO就是包含这两个)
         Question question = questionMapper.selectByPrimaryKey(id);
+        if (question == null){
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            //给CustomizeErrorCode中的message赋值=>可以通过她的接口中的getMessage()获取该message=》CustomizeException直接调用接口获取message
+        }
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
         BeanUtils.copyProperties(question,questionDTO);
@@ -140,7 +143,13 @@ public class QuestionService {
             QuestionExample example = new QuestionExample();
             example.createCriteria()
                             .andIdEqualTo(question.getId());
-            questionMapper.updateByExampleSelective(updateQuestion, example);
+            int update = questionMapper.updateByExampleSelective(updateQuestion, example);
+            //如果我在编辑之后点击发布之前，我在另一个页面将这个问题删除了，我这里应该是更新失败的
+            //更新失败应该抛出问题找不到异常
+            if (update != 1){
+                //更新失败
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);//这个message是重复的，每次使用都重新写很麻烦，定义一个ErrorCode来枚举
+            }
         }
     }
 }
