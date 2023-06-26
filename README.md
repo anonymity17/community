@@ -90,7 +90,7 @@ CREATE TABLE USER
 ```
 mvn -Dmybatis.generator.overwrite=true mybatis-generator:generate
 ```
-
+m
 
 ## 技术栈
 |  技术   |  链接   |
@@ -157,6 +157,8 @@ ctrl+shift+上/下 替换位置
 ctrl + d 自动在下方复制出一行
 ctrl +Alt + <- 回到上一次编辑的位置
 ctrl + n 搜索，可直接定位问道代码的某一行
+ctrl + alt +v 抽取变量出来
+alt + F7 在一个方法上点击，就可以显示出哪里调用了该方法
 出现错误回到历史版本,右键-》git-》revert
 选中项目回到历史版本,右键-》git-》show history
     没有git 使用local history
