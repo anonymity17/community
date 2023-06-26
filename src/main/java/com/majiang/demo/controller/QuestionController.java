@@ -20,6 +20,10 @@ public class QuestionController {
 //        通过id获取到我的问题列表中 的某一个问题
 //        已经存在service，controller应该调用service，service去调用mapper
         QuestionDTO questionDTO = questionService.getById(id);
+
+        //累加阅读数
+        //上面已经判断过id是否存在，所以在invView方法中不需要再次判断id是否存在
+        questionService.incView(id);
 //        要将获取到的问题展示在页面上=》使用model
         model.addAttribute("question",questionDTO);
         return "question";

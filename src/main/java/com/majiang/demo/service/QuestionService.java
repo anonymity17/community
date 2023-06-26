@@ -4,6 +4,7 @@ import com.majiang.demo.dto.PaginationDTO;
 import com.majiang.demo.dto.QuestionDTO;
 import com.majiang.demo.exception.CustomizeErrorCode;
 import com.majiang.demo.exception.CustomizeException;
+import com.majiang.demo.mapper.QuestionExtMapper;
 import com.majiang.demo.mapper.QuestionMapper;
 import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.Question;
@@ -31,6 +32,9 @@ public class QuestionService {
     private UserMapper userMapper;
     @Autowired
     private QuestionMapper questionMapper;
+
+    @Autowired
+    private QuestionExtMapper questionExtMapper;
 
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTOS = new PaginationDTO();
@@ -130,6 +134,9 @@ public class QuestionService {
             //表示这是一个新的发布问题，直接插入数据即可
             question.setGmtCreate(System.currentTimeMillis( ));
             question.setGmtModified(question.getGmtCreate());
+            question.setViewCount(0);
+            question.setCommentCount(0);
+            question.setLikeCount(0);
             questionMapper.insert(question);
         }else{
             //表示这是一个编辑问题操作，更新数据库即可
@@ -151,5 +158,14 @@ public class QuestionService {
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);//这个message是重复的，每次使用都重新写很麻烦，定义一个ErrorCode来枚举
             }
         }
+    }
+
+    public void incView(Integer id) {
+        //用作更新的question，如下
+        //更新需要两个值；1）待更新的问题的id；2）每次递增的大小
+        Question updateQuestion = new Question();
+        updateQuestion.setId(id);
+        updateQuestion.setViewCount(1);//每次递增1
+        questionExtMapper.incView(updateQuestion);
     }
 }
