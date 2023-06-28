@@ -9,6 +9,16 @@
     <script src="/js/jquery-3.4.1.min.js"></script><!--jquery在bootstrap之前-->
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
 </head>
+<script type="application/javascript">
+    window.onload = function () {
+        debugger;//前端的调试：这里是一断点
+        var closable = window.localStorage.getItem("closable");
+        if (closable == "true") {
+            window.close();//关掉窗口
+            window.localStorage.removeItem("closable");
+        }
+    }
+</script>
 <body>
 <!--调用navigation.html-->
 <div th:insert="~{navigation::nav}"></div>
@@ -23,7 +33,7 @@
             <div class="media" th:each="question : ${pagination.questions}">
                 <div class="media-left">
                     <a href="#">
-<!--                        <span th:text="${question.user.avatarUrl}"></span>-->
+                        <!--                        <span th:text="${question.user.avatarUrl}"></span>-->
                         <img class="media-object" th:src="${question.user.avatarUrl}">
                     </a>
                 </div>
@@ -32,8 +42,9 @@
                         <a th:href="@{'/question/'+${question.id}}" th:text="${question.title}"></a>
                     </h4>
                     <span th:text="${question.description}"></span>
-                        <span class="text-desc"><span th:text="${question.commentCount}"></span>个回复 ·
-                            <span th:text="${question.viewCount}"></span>个浏览 · <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
+                    <span class="text-desc"><span th:text="${question.commentCount}"></span>个回复 ·
+                            <span th:text="${question.viewCount}"></span>个浏览 · <span
+                                th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
                 </div>
             </div>
             <nav aria-label="Page navigation">
@@ -48,7 +59,8 @@
                             <span aria-hidden="true">&lt;</span>
                         </a>
                     </li>
-                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''"><!--第二个page是上面each中的-->
+                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''">
+                        <!--第二个page是上面each中的-->
                         <a th:href="@{/(page=${page})}" th:text="${page}">
 
                         </a>
@@ -58,7 +70,7 @@
                             <span aria-hidden="true">&gt;</span>
                         </a>
                     </li>
-                        <li th:if="${pagination.showEndPage}">
+                    <li th:if="${pagination.showEndPage}">
                         <a th:href="@{/(page=${pagination.totalPage})}" aria-label="Previous">
                             <span aria-hidden="true">&gt;&gt;</span><!--">"的转义为"&gt;"-->
                         </a>

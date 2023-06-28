@@ -45,13 +45,12 @@ public class CommentService {
         }else{
             //上方已经做好了校验，此处评论评论的是问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());//被评论的问题
-            if (question.getId() == null){
+            if (question == null){
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             }
             commentMapper.insert(comment);
             question.setCommentCount(1);//设置每次只增加一
             questionExtMapper.incCommentCount(question);//更新question表中的comment_count
-
             //回复问题
         }
     }

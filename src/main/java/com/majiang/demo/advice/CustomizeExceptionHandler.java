@@ -33,7 +33,7 @@ public class CustomizeExceptionHandler {
         //json中包含的信息我们可以看到错误代码来调节，而浏览器那边是给用户看的没必要看到太具体的信息
         if ("application/JSON".equals(contentType)){
             //返回JSON
-            ResultDTO  resultDTO = null;
+            ResultDTO  resultDTO;
             if (e instanceof CustomizeException){
                 //自定义的异常问题转为JSON
 //                return ResultDTO.errorOf((CustomizeException) e);
@@ -59,6 +59,7 @@ public class CustomizeExceptionHandler {
         }else{
             //返回页面
             if (e instanceof CustomizeException){
+                System.out.println(e.getMessage());
                 //自定义的异常
                 model.addAttribute("message",e.getMessage());
             }else{

@@ -54,6 +54,7 @@
                 </div>
                 <!--发表评论需要三个值1）parendId；2）文本内容；3）评论type-->
                 <input type="hidden" id="question_id" th:value="${question.id}"><!--1）parendId-->
+<!--                <input type="hidden" id="question_id" value="99">&lt;!&ndash;1）parendId&ndash;&gt;-->
                 <textarea class="form-control comment" rows="6" id="comment_content"></textarea>
                 <button type="button" class="btn btn-success btn-comment" onclick="post()">回复</button><!--绑定一个post()方法，在community.js中定义-->
             </div>
