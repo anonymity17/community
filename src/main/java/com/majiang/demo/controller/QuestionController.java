@@ -15,7 +15,7 @@ public class QuestionController {
     private QuestionService questionService;
 
     @GetMapping("/question/{id}")//这个{}里面的id可以通过下面这个@PathVariable拿到id
-    public String question(@PathVariable(name = "id") Integer id,
+    public String question(@PathVariable(name = "id") Long id,
                            Model model){
 //        通过id获取到我的问题列表中 的某一个问题
 //        已经存在service，controller应该调用service，service去调用mapper

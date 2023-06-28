@@ -24,4 +24,11 @@
     where id = #{id}
   </update>
 
+  <!--这里不直接将增加的数据设置为1，是因为以后可能不会每增加一个都写入数据库，可能会等10个再一起写入-->
+  <update id="incCommentCount" parameterType="com.majiang.demo.model.Question">
+    update question
+    set comment_count = comment_count + #{commentCount,jdbcType=INTEGER}
+    where id = #{id}
+  </update>
+
 </mapper>

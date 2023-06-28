@@ -154,7 +154,7 @@ Ctrl+alt+B 看到一个类的全部子类
 ctrl + shift + out +? 在里面设置运行期间也可以自动部署
 ctrl +E 切换到最近使用的窗口
 ctrl+shift+上/下 替换位置
-ctrl + d 自动在下方复制出一行
+ctrl + d 自动在下方复制出一行，也可以选中一整段复制
 ctrl +Alt + <- 回到上一次编辑的位置
 ctrl + n 搜索，可直接定位问道代码的某一行
 ctrl + alt +v 抽取变量出来

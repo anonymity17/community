@@ -24,8 +24,8 @@ public class PublishController {
     private QuestionService questionService;
 //    @Autowired
 //    private QuestionMapper questionMapper;//使用questionService来代替questionMapper
-    @Autowired
-    private UserMapper userMapper;
+//    @Autowired
+//    private UserMapper userMapper;
     @GetMapping("/publish")
     public String publish(){
         return "publish";
@@ -36,7 +36,7 @@ public class PublishController {
     public String doPublish(@RequestParam(value = "title", required = false) String title,//required = false表示可以为空
                             @RequestParam(value = "description", required = false) String description,
                             @RequestParam(value = "tag", required = false) String tag,
-                            @RequestParam(value = "id", required = false) Integer id,//接收因为edit，前端传过来的id
+                            @RequestParam(value = "id", required = false) Long id,//接收因为edit，前端传过来的id
                             HttpServletRequest request,
                             Model model){
         model.addAttribute("title",title);
@@ -73,7 +73,7 @@ public class PublishController {
         return "redirect:/";//没有异常跳转会首页
     }
     @GetMapping("/publish/{id}")
-    public String edit(@PathVariable(name = "id") Integer id,
+    public String edit(@PathVariable(name = "id") Long id,
                        Model model){
         //通过id获取到一个question
         QuestionDTO question = questionService.getById(id);//将Mapper更改为service时，也将question更改为questionDTO，但是没关系，我们只需要拿出一些数据即可

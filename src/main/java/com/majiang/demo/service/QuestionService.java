@@ -72,7 +72,7 @@ public class QuestionService {
     }
 
     //获取个人全部的问题列表=》“我的问题”
-    public PaginationDTO list(Integer userId, Integer page, Integer size) {
+    public PaginationDTO list(Long userId, Integer page, Integer size) {
         PaginationDTO paginationDTOS = new PaginationDTO();
         //获取个人页面中所有的问题条数
         QuestionExample example = new QuestionExample();
@@ -114,7 +114,7 @@ public class QuestionService {
         return paginationDTOS;
     }
 
-    public QuestionDTO getById(Integer id) {
+    public QuestionDTO getById(Long id) {
 //        QuestionMapper自然是处理question这个表的，返回questionDTO当然不好了
 //        因此还是使用Question+User的方式(QuestionDTO就是包含这两个)
         Question question = questionMapper.selectByPrimaryKey(id);
@@ -160,7 +160,7 @@ public class QuestionService {
         }
     }
 
-    public void incView(Integer id) {
+    public void incView(Long id) {
         //用作更新的question，如下
         //更新需要两个值；1）待更新的问题的id；2）每次递增的大小
         Question updateQuestion = new Question();
