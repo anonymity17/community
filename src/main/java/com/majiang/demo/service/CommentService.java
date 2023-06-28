@@ -10,6 +10,7 @@ import com.majiang.demo.model.Comment;
 import com.majiang.demo.model.Question;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CommentService {
@@ -19,6 +20,8 @@ public class CommentService {
     private QuestionMapper questionMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
+
+    @Transactional //整个方法都作为一个事务
     public void insert(Comment comment) {
         if (comment.getParentId() == null || comment.getParentId() == 0){
             //评论的父亲（也就是评论所属的问题）都不存在，评论自然不存在

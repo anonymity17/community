@@ -36,10 +36,15 @@ public class CommentController {
             //这个对象会通过ResponseBody序列化成json，发送到前端
             return ResultDTO.errorOf(CustomizeErrorCode.NO_LOGIN);//NO_LOGIN("当前操作需要登录，请登录后重试",2003)
         }
+        //question.html按钮onclick
+        // =>communit.js中的post()
+        // =>post()将页面的数据对象转化成字符串json，再由url链接到这里
+        // =>@RequestBody反序列化成对象comment
         Comment comment = new Comment();
         comment.setParentId(commentDTO.getParentId());
         comment.setContent(commentDTO.getContent());
         comment.setType(commentDTO.getType());
+
         //type是评论的时候查评论，是问题的时候查问题，使用枚举表示
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setGmtModified(System.currentTimeMillis());
