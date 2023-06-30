@@ -20,4 +20,6 @@ public interface QuestionExtMapper {
     * 而数据表中那么多记录，如何确定是哪一条就是根据该对象的id
     * 所以在自增的时候要创建这样一个对象至少要对id和commentCount属性赋值*/
     int incCommentCount(Question record);
+    /*更加一条记录的tag去匹配其他相似的tag的记录*/
+    List<Question> selectRelated(Question question);
 }

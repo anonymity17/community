@@ -10,14 +10,17 @@ import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.Question;
 import com.majiang.demo.model.QuestionExample;
 import com.majiang.demo.model.User;
-import org.apache.ibatis.annotations.Param;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 将User作为属性额外添加使用QuestionDTO,但是在indexController中获取数据
@@ -36,24 +39,28 @@ public class QuestionService {
     @Autowired
     private QuestionExtMapper questionExtMapper;
 
+    /*
+     *主页中的问题列表*/
     public PaginationDTO list(Integer page, Integer size) {
         PaginationDTO paginationDTOS = new PaginationDTO();
         //获取页面中所有的记录条数
         Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
         //使用方法将所有的参数传入
-        paginationDTOS.setPagination(totalCount,page,size);
+        paginationDTOS.setPagination(totalCount, page, size);
         //对于page越界的处理
-        if (page < 1){
+        if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTOS.getTotalPage()){
+        if (page > paginationDTOS.getTotalPage()) {
             page = paginationDTOS.getTotalPage();
         }
 
         Integer offset = size * (page - 1);
         if (offset < 0) return paginationDTOS;
         //获取所有的question目录
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(),new RowBounds(offset,size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         //遍历所有的question，根据每条数据中的id去查询user
         for (Question question : questions) {
@@ -62,7 +69,7 @@ public class QuestionService {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             //要将Question转换成QuestionDTO
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);//快速将question对象中的属性拷贝到questionDTO对象上
+            BeanUtils.copyProperties(question, questionDTO);//快速将question对象中的属性拷贝到questionDTO对象上
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
@@ -81,12 +88,12 @@ public class QuestionService {
         Integer totalCount = (int) questionMapper.countByExample(example);
 
         //使用方法将所有的参数传入
-        paginationDTOS.setPagination(totalCount,page,size);
+        paginationDTOS.setPagination(totalCount, page, size);
         //对于page越界的处理
-        if (page < 1){
+        if (page < 1) {
             page = 1;
         }
-        if (page > paginationDTOS.getTotalPage()){
+        if (page > paginationDTOS.getTotalPage()) {
             page = paginationDTOS.getTotalPage();
         }
 
@@ -95,7 +102,7 @@ public class QuestionService {
         QuestionExample example1 = new QuestionExample();
         example1.createCriteria()
                 .andCreatorEqualTo(userId);
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1,new RowBounds(offset,size));
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example1, new RowBounds(offset, size));
 
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         //遍历所有的question，根据每条数据中的id去查询user
@@ -104,7 +111,7 @@ public class QuestionService {
             User user = userMapper.selectByPrimaryKey(question.getCreator());
             //要将Question转换成QuestionDTO
             QuestionDTO questionDTO = new QuestionDTO();
-            BeanUtils.copyProperties(question,questionDTO);//快速将question对象中的属性拷贝到questionDTO对象上
+            BeanUtils.copyProperties(question, questionDTO);//快速将question对象中的属性拷贝到questionDTO对象上
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
@@ -118,27 +125,27 @@ public class QuestionService {
 //        QuestionMapper自然是处理question这个表的，返回questionDTO当然不好了
 //        因此还是使用Question+User的方式(QuestionDTO就是包含这两个)
         Question question = questionMapper.selectByPrimaryKey(id);
-        if (question == null){
+        if (question == null) {
             throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
             //给CustomizeErrorCode中的message赋值=>可以通过她的接口中的getMessage()获取该message=》CustomizeException直接调用接口获取message
         }
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         QuestionDTO questionDTO = new QuestionDTO();
-        BeanUtils.copyProperties(question,questionDTO);
+        BeanUtils.copyProperties(question, questionDTO);
         questionDTO.setUser(user);
         return questionDTO;
     }
 
     public void createOrUpdate(Question question) {
-        if(question.getId() == null){
+        if (question.getId() == null) {
             //表示这是一个新的发布问题，直接插入数据即可
-            question.setGmtCreate(System.currentTimeMillis( ));
+            question.setGmtCreate(System.currentTimeMillis());
             question.setGmtModified(question.getGmtCreate());
             question.setViewCount(0);
             question.setCommentCount(0);
             question.setLikeCount(0);
             questionMapper.insert(question);
-        }else{
+        } else {
             //表示这是一个编辑问题操作，更新数据库即可
 //            question.setGmtModified(System.currentTimeMillis());
             Question updateQuestion = new Question();//需要更新的记录
@@ -149,11 +156,11 @@ public class QuestionService {
 
             QuestionExample example = new QuestionExample();
             example.createCriteria()
-                            .andIdEqualTo(question.getId());
+                    .andIdEqualTo(question.getId());
             int update = questionMapper.updateByExampleSelective(updateQuestion, example);
             //如果我在编辑之后点击发布之前，我在另一个页面将这个问题删除了，我这里应该是更新失败的
             //更新失败应该抛出问题找不到异常
-            if (update != 1){
+            if (update != 1) {
                 //更新失败
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);//这个message是重复的，每次使用都重新写很麻烦，定义一个ErrorCode来枚举
             }
@@ -167,5 +174,27 @@ public class QuestionService {
         updateQuestion.setId(id);
         updateQuestion.setViewCount(1);//每次递增1
         questionExtMapper.incView(updateQuestion);
+    }
+
+    public List<QuestionDTO> selectRelated(QuestionDTO queryDTO) {
+        if (StringUtils.isBlank(queryDTO.getTag())) {
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(queryDTO.getTag(), ",");
+        /*用于匹配的正则  p|p2|p3  */
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+        //要使用question对象来查找相似tag的其他记录
+        Question question = new Question();
+        //该对象包括id以及regexp
+        question.setId(queryDTO.getId());
+        question.setTag(regexpTag);
+        //所有相似tag的记录列表
+        List<Question> relatedQuestions = questionExtMapper.selectRelated(question);
+        List<QuestionDTO> questionDTOList = relatedQuestions.stream().map(q -> {
+            QuestionDTO questionDTO = new QuestionDTO();
+            BeanUtils.copyProperties(q, questionDTO);
+            return questionDTO;
+        }).collect(Collectors.toList());
+        return questionDTOList;
     }
 }

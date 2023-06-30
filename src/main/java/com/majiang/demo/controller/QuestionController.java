@@ -27,7 +27,8 @@ public class QuestionController {
 //        通过id获取到我的问题列表中 的某一个问题
 //        已经存在service，controller应该调用service，service去调用mapper
         QuestionDTO questionDTO = questionService.getById(id);
-
+        // 标签匹配到的其他问题列表
+        List<QuestionDTO> relatedQuestions = questionService.selectRelated(questionDTO);
         //获取当前问题所有的评论列表
         List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         //累加阅读数
@@ -36,6 +37,7 @@ public class QuestionController {
 //        要将获取到的问题展示在页面上=》使用model
         model.addAttribute("question",questionDTO);
         model.addAttribute("comments",comments);
+        model.addAttribute("relatedQuestions",relatedQuestions);
         return "question";
     }
 }
