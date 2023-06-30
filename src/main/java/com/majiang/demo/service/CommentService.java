@@ -4,10 +4,7 @@ import com.majiang.demo.dto.CommentDTO;
 import com.majiang.demo.enums.CommentTypeEnum;
 import com.majiang.demo.exception.CustomizeErrorCode;
 import com.majiang.demo.exception.CustomizeException;
-import com.majiang.demo.mapper.CommentMapper;
-import com.majiang.demo.mapper.QuestionExtMapper;
-import com.majiang.demo.mapper.QuestionMapper;
-import com.majiang.demo.mapper.UserMapper;
+import com.majiang.demo.mapper.*;
 import com.majiang.demo.model.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +17,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * service中的异常都向上抛了，被异常拦截器捕获了（因为没有在controller捕获），异常相关信息被放入model，弹出error页面
+ * controller将异常分装成ResultDTO对象，并且使用@ResponseBody 修饰方法，方法返回的也是ResultDTO对象，因此是将异常信息通过@ResponseBody 序列化成json发送到前端
+ * 前端使用js中的post()中response接收到异常信息，以alert弹窗的形式表现
+ */
 @Service
 public class CommentService {
     @Autowired
@@ -28,6 +30,9 @@ public class CommentService {
     private QuestionMapper questionMapper;
     @Autowired
     private QuestionExtMapper questionExtMapper;
+
+    @Autowired
+    private CommentExtMapper commentExtMapper;
 
     @Autowired
     private UserMapper userMapper;
@@ -53,6 +58,12 @@ public class CommentService {
             }
             //可以正常评论，就是将当前这个评论存储数据库
             commentMapper.insert(comment);
+            /*上面这个comment 是将二级评论插入评论表中，下面增加数量是对一级评论增加*/
+            /*增加评论数*/
+            Comment parentComment = new Comment();/*更具有一级评论对象更新一级评论中的评论数量*/
+            parentComment.setId(comment.getParentId());/*设置id确定一个一级评论对象，将该对象的commentCount=1，作为数量增加步长*/
+            parentComment.setCommentCount(1);
+            commentExtMapper.incCommentCount(parentComment);
         }else{
             //上方已经做好了校验，此处评论评论的是问题
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());//被评论的问题
@@ -66,11 +77,19 @@ public class CommentService {
         }
     }
 
-    public List<CommentDTO> listByQuestionId(Long id) {
+    /**
+     * 根据枚举的类型决定（1）问题下面的评论列表；（2）评论下面的评论列表
+     * 根据id决定 哪条问题（评论）下的评论列表
+     * @param id
+     * @param type
+     * @return
+     */
+    public List<CommentDTO> listByTargetId(Long id, CommentTypeEnum type) {
         CommentExample example = new CommentExample();
         example.createCriteria()
                         .andParentIdEqualTo(id) // 不只有parentId
-                .andTypeEqualTo(CommentTypeEnum.QUESTION.getType());//必须是问题下面的评论列表
+                .andTypeEqualTo(type.getType());//必须是问题下面的评论列表
+        example.setOrderByClause("gmt_create desc");//使评论列表按照时间顺序倒序
         List<Comment> comments = commentMapper.selectByExample(example);
         //获取每个评论的用户，即comment中的commentator信息
         //判断是否存在评论列表

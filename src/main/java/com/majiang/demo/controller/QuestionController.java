@@ -2,6 +2,7 @@ package com.majiang.demo.controller;
 
 import com.majiang.demo.dto.CommentDTO;
 import com.majiang.demo.dto.QuestionDTO;
+import com.majiang.demo.enums.CommentTypeEnum;
 import com.majiang.demo.service.CommentService;
 import com.majiang.demo.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,7 @@ public class QuestionController {
         QuestionDTO questionDTO = questionService.getById(id);
 
         //获取当前问题所有的评论列表
-        List<CommentDTO> comments = commentService.listByQuestionId(id);
+        List<CommentDTO> comments = commentService.listByTargetId(id, CommentTypeEnum.QUESTION);
         //累加阅读数
         //上面已经判断过id是否存在，所以在invView方法中不需要再次判断id是否存在
         questionService.incView(id);

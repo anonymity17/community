@@ -158,9 +158,13 @@ ctrl + d 自动在下方复制出一行，也可以选中一整段复制
 ctrl +Alt + <- 回到上一次编辑的位置
 ctrl + n 搜索，可直接定位问道代码的某一行
 ctrl + alt +v 抽取变量出来
+ctrl + alt +p 抽取一个变量，添加一个形参
+ctrl + alt +f 抽方法
 alt + F7 在一个方法上点击，就可以显示出哪里调用了该方法
 ctrl + alt + L 格式化代码
 ctrl + ? 在html打注释 ctrl+shift+？更好
+ctrl + F6 修改参数的签名，参数的类型 
+shift + F6 更改名称
 出现错误回到历史版本,右键-》git-》revert
 选中项目回到历史版本,右键-》git-》show history
     没有git 使用local history

@@ -23,7 +23,7 @@ public class CustomizeExceptionHandler {
     @ExceptionHandler(Exception.class)
 //    @ResponseBody //只有@ResponseBody才能返回json=>不能同时返回页面和json=>使用servlet的方式返回json(response)
 //    Object handle(HttpServletRequest request, Throwable e, Model model){//之前写的return "index"也是默认返回的ModelAndView
-    ModelAndView handle(HttpServletRequest request, Throwable e, Model model, HttpServletResponse response){//之前写的return "index"也是默认返回的ModelAndView
+    ModelAndView handle(HttpServletRequest request, Throwable e, Model model, HttpServletResponse response) {//之前写的return "index"也是默认返回的ModelAndView
         //我们希望返回json，这样就知道一些异常信息
         //返回json和返回网页的contentType不一样，利用此来处理
         String contentType = request.getContentType();
@@ -31,15 +31,15 @@ public class CustomizeExceptionHandler {
         //2.在浏览器端打印出页面
         //应该是这两个位置都呈现不同的效果
         //json中包含的信息我们可以看到错误代码来调节，而浏览器那边是给用户看的没必要看到太具体的信息
-        if ("application/JSON".equals(contentType)){
+        if ("application/JSON".equals(contentType)) {
             //返回JSON
-            ResultDTO  resultDTO;
-            if (e instanceof CustomizeException){
+            ResultDTO resultDTO;
+            if (e instanceof CustomizeException) {
                 //自定义的异常问题转为JSON
 //                return ResultDTO.errorOf((CustomizeException) e);
                 resultDTO = ResultDTO.errorOf((CustomizeException) e);
 
-            }else{
+            } else {
                 //不明确的异常转JSON,服务器短的异常
 //                return ResultDTO.errorOf(CustomizeErrorCode.SYS_ERROR);
                 resultDTO = ResultDTO.errorOf(CustomizeErrorCode.SYS_ERROR);
@@ -56,15 +56,15 @@ public class CustomizeExceptionHandler {
             writer.write(JSON.toJSONString(resultDTO));
             writer.close();
             return null;
-        }else{
+        } else {
             //返回页面
-            if (e instanceof CustomizeException){
-                System.out.println(e.getMessage());
+            if (e instanceof CustomizeException) {
+                System.out.println("拦截器兰拦截到异常：" + e.getMessage());
                 //自定义的异常
-                model.addAttribute("message",e.getMessage());
-            }else{
+                model.addAttribute("message", e.getMessage());
+            } else {
                 //不明确的异常转JSON,服务器短的异常
-                model.addAttribute("message",CustomizeErrorCode.SYS_ERROR.getMessage());
+                model.addAttribute("message", CustomizeErrorCode.SYS_ERROR.getMessage());
             }
         }
         return new ModelAndView("error");
