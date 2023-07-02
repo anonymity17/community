@@ -1,11 +1,13 @@
 package com.majiang.demo.controller;
 
+import com.majiang.demo.cache.TagCache;
 import com.majiang.demo.dto.QuestionDTO;
 import com.majiang.demo.mapper.QuestionMapper;
 import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.Question;
 import com.majiang.demo.model.User;
 import com.majiang.demo.service.QuestionService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,7 +29,8 @@ public class PublishController {
 //    @Autowired
 //    private UserMapper userMapper;
     @GetMapping("/publish")
-    public String publish(){
+    public String publish(Model model){
+        model.addAttribute("tags", TagCache.get());
         return "publish";
     }
     //前端get，就渲染页面，如上；前端post，就执行请求，如下
@@ -42,6 +45,7 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("description",description);
         model.addAttribute("tag",tag);
+        model.addAttribute("tags", TagCache.get());
         if (title == null || title == ""){
             model.addAttribute("error","标题不能为空");
             return "publish";
@@ -52,6 +56,12 @@ public class PublishController {
         }
         if (tag == null || tag == ""){
             model.addAttribute("error","标签不能为空");
+            return "publish";
+        }
+        String invalid = TagCache.filterInvalid(tag);
+        if (StringUtils.isNotBlank(invalid)){
+            //无效字符串不为空
+            model.addAttribute("error","输入非法标签 ：" + invalid);
             return "publish";
         }
 
@@ -75,6 +85,7 @@ public class PublishController {
     @GetMapping("/publish/{id}")
     public String edit(@PathVariable(name = "id") Long id,
                        Model model){
+        model.addAttribute("tags", TagCache.get());
         //通过id获取到一个question
         QuestionDTO question = questionService.getById(id);//将Mapper更改为service时，也将question更改为questionDTO，但是没关系，我们只需要拿出一些数据即可
         //将这个question回显到页面

@@ -40,7 +40,7 @@ body {
 }
 
 .community-menu {
-    display: block;
+    /*display: block;*/
     color: #999;
     font-size: 13px;
     margin-bottom: 15px;
@@ -113,4 +113,13 @@ body {
 }
 .question-wechat{
     width: 100%;
+}
+.publish-tag-tag{
+    display: none;
+    margin-top: 10px;
+}
+.publish-tag-tag .label-info{
+    white-space: normal;
+    margin: 5px 5px;
+    display: inline-block;
 }

@@ -3,8 +3,8 @@
 <head>
     <title th:text="${sectionName}"></title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<!--    <link rel="stylesheet" href="css/bootstrap.min.css"/>&lt;!&ndash;这样写表示同一级目录页面"/profile"是可以的，但是"/profile/questions"不行&ndash;&gt;-->
-<!--"/profile/questions"s是"/profile"的下一级了 ，所以要更改为根目录，如下  -->
+    <!--    <link rel="stylesheet" href="css/bootstrap.min.css"/>&lt;!&ndash;这样写表示同一级目录页面"/profile"是可以的，但是"/profile/questions"不行&ndash;&gt;-->
+    <!--"/profile/questions"s是"/profile"的下一级了 ，所以要更改为根目录，如下  -->
     <link rel="stylesheet" href="/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css"/>
     <link rel="stylesheet" href="/css/community.css"/>
@@ -23,19 +23,22 @@
             <h2><span th:text="${sectionName}"></span></h2>
             <hr>
             <div class="media" th:each="question : ${pagination.questions}">
-<!--                <div class="media-left">-->
-<!--                    <a href="#">-->
-<!--                        <img class="media-object" th:src="${question.user.avatarUrl}">-->
-<!--                    </a>-->
-<!--                </div>-->
-                <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}"></a>
+                <div class="media-left">
+                    <a href="#">
+                        <img class="media-object" th:src="${question.user.avatarUrl}">
+                    </a>
+                </div>
+                <!--                <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}"></a>-->
                 <div class="media-body">
-                    <h4 class="media-heading">
-                        <a th:href="@{'/question/'+${question.id}}" th:text="${question.title}"></a>
-                    </h4>
-                    <span th:text="${question.description}"></span>
+                    <h4 class="media-heading" th:text="${question.title}"></h4>
                     <span class="text-desc"><span th:text="${question.commentCount}"></span>个回复 ·
-                            <span th:text="${question.viewCount}"></span>个浏览 · <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span></span>
+                            <span th:text="${question.viewCount}"></span>个浏览 ·
+                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>·
+                        <a th:href="@{'/publish/'+${question.id}}" class="community-menu"
+                           th:if="${session.user != null && session.user.id == question.creator}">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                    </a>
+                    </span>
                 </div>
             </div>
             <nav aria-label="Page navigation">
@@ -51,7 +54,8 @@
                         </a>
 
                     </li>
-                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''"><!--第二个page是上面each中的-->
+                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''">
+                        <!--第二个page是上面each中的-->
                         <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}">
 
                         </a>
@@ -71,9 +75,10 @@
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
             <div class="list-group section">
-<!--                <a href="#" class="list-group-item" th:class="${section=='questions'}? 'active':''">我的问题</a>-->
+                <!--                <a href="#" class="list-group-item" th:class="${section=='questions'}? 'active':''">我的问题</a>-->
                 <!--class标签也会覆盖，最终list-group-item不起作用，更改如下：-->
-                <a href="/profile/questions" th:class="${section=='questions'}? 'active list-group-item':'list-group-item'">我的问题</a>
+                <a href="/profile/questions"
+                   th:class="${section=='questions'}? 'active list-group-item':'list-group-item'">我的问题</a>
 
                 <a href="/profile/replies" th:class="${section=='replies'}? 'active list-group-item':'list-group-item'">
                     最新回复
