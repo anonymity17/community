@@ -45,7 +45,6 @@
                 </div>
                 <script type="text/javascript">
                     $(function () {
-                        debugger;
                         editormd.markdownToHTML("question-view", {});
                     });
                 </script>
@@ -154,12 +153,12 @@
                     <div class="media">
                         <div class="media-left">
                             <a href="#">
-                                <img class="media-object" th:src="${question.user.avatarUrl}">
+                                <img class="media-object" th:src="${session.user != null ? session.user.avatarUrl : '/img/default.png'}">
                             </a>
                         </div>
                         <div class="media-body">
                             <h4 class="media-heading">
-                                <span th:text="${question.user.name}"></span>
+                                <span th:text="${session.user != null ? session.user.name: '未登录'}"></span>
                             </h4>
 
                         </div>
@@ -195,7 +194,7 @@
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
                 <h4>站长微信</h4>
-                <!-图片加载不出来=>clean，重启-->
+                <!--图片加载不出来=>clean，重启-->
                 <img class="img-thumbnail question-wechat" src="/img/1.png">
             </div>
             <!--相关问题-->

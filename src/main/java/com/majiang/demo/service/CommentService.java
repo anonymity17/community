@@ -92,6 +92,9 @@ public class CommentService {
     }
 
     private void createNotify(Comment comment, Long receiver, String notifierName, String outerTitle, NotificationtTypeEnum notificationType, Long outerId) {
+        if (receiver == comment.getCommentator()){
+            return;/*自己发送的评论不应该通知自己*/
+        }
         Notification notification = new Notification();
         /*更新表中的信息*/
         notification.setGmtCreate(System.currentTimeMillis());

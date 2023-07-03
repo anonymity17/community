@@ -1,9 +1,7 @@
 package com.majiang.demo.mapper;
 
+import com.majiang.demo.dto.QuestionQueryDTO;
 import com.majiang.demo.model.Question;
-import com.majiang.demo.model.QuestionExample;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.session.RowBounds;
 
 import java.util.List;
 
@@ -22,4 +20,19 @@ public interface QuestionExtMapper {
     int incCommentCount(Question record);
     /*更加一条记录的tag去匹配其他相似的tag的记录*/
     List<Question> selectRelated(Question question);
+
+    /**
+     * 根据查询条件展示问题列表
+     * @param questionQueryDTO 这里的查询条件：搜索框内容，页面大小（设置一页展示记录条数），第几页（每一页不同啊）
+     * @return
+     */
+    int countBySearch(QuestionQueryDTO questionQueryDTO);
+
+    /**
+     * 根据搜索框，偏移量，页面大小，查询问题列表
+     * 可以看出这三个条件多次使用，直接包装成QuestionQueryDTO了，很方便
+     * @param questionQueryDTO
+     * @return
+     */
+    List<Question> selectBySearch(QuestionQueryDTO questionQueryDTO);
 }

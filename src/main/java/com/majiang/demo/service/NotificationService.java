@@ -50,7 +50,6 @@ public class NotificationService {
                 .andReceiverEqualTo(userId);
         notificationExample1.setOrderByClause("gmt_create desc");
         List<Notification> notifications = notificationMapper.selectByExampleWithRowbounds(notificationExample1, new RowBounds(offset, size));
-        System.out.println("notifications" + notifications.get(0).getOuterId());
         /*判断有没有通知*/
         if (notifications.size() == 0) {
             return paginationDTOS;

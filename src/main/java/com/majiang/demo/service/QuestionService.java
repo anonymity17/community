@@ -2,6 +2,7 @@ package com.majiang.demo.service;
 
 import com.majiang.demo.dto.PaginationDTO;
 import com.majiang.demo.dto.QuestionDTO;
+import com.majiang.demo.dto.QuestionQueryDTO;
 import com.majiang.demo.exception.CustomizeErrorCode;
 import com.majiang.demo.exception.CustomizeException;
 import com.majiang.demo.mapper.QuestionExtMapper;
@@ -10,11 +11,11 @@ import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.Question;
 import com.majiang.demo.model.QuestionExample;
 import com.majiang.demo.model.User;
+import com.mysql.cj.x.protobuf.MysqlxDatatypes;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -41,10 +42,20 @@ public class QuestionService {
 
     /*
      *主页中的问题列表*/
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
+        /*search中的内容不为空，表示有查询，建立正则表达式*/
+        if (StringUtils.isNotBlank(search)){
+            /*先将用户输入的字符串按照空格拆分成组词*/
+            String[] word = StringUtils.split(search, " ");
+            search = Arrays.stream(word).collect(Collectors.joining("|"));/*将所有的词组重新使用|拼接*/
+            /*之后的查找通过search来查找*/
+        }
         PaginationDTO paginationDTOS = new PaginationDTO();
         //获取页面中所有的记录条数
-        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
+//        Integer totalCount = (int) questionMapper.countByExample(new QuestionExample());
+        QuestionQueryDTO questionQueryDTO = new QuestionQueryDTO();
+        questionQueryDTO.setSearch(search);
+        Integer totalCount = questionExtMapper.countBySearch(questionQueryDTO);
         //使用方法将所有的参数传入
         paginationDTOS.setPagination(totalCount, page, size);
         //对于page越界的处理
@@ -60,7 +71,12 @@ public class QuestionService {
         //获取所有的question目录
         QuestionExample questionExample = new QuestionExample();
         questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+
+//        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(offset, size));
+        /*每页的问题列表*/
+        questionQueryDTO.setPage(offset);
+        questionQueryDTO.setSize(size);
+        List<Question> questions = questionExtMapper.selectBySearch(questionQueryDTO);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
         //遍历所有的question，根据每条数据中的id去查询user
         for (Question question : questions) {
