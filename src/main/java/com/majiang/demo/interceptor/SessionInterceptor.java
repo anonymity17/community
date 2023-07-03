@@ -3,6 +3,7 @@ package com.majiang.demo.interceptor;
 import com.majiang.demo.mapper.UserMapper;
 import com.majiang.demo.model.User;
 import com.majiang.demo.model.UserExample;
+import com.majiang.demo.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -17,6 +18,9 @@ import java.util.List;
 public class  SessionInterceptor implements HandlerInterceptor {
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -40,6 +44,11 @@ public class  SessionInterceptor implements HandlerInterceptor {
                         //数据库中有这样一个用户，就将该用户放入会话中
                         request.getSession().setAttribute("user",users.get(0));
                         //会话中中的用户不为空才会展示”月牙“而不是”登录“
+
+                        /*未读读的获取，导航栏中的”通知“以及下面“我的通知”都需要调用unreadCount，所以直接放入session调用一次即可*/
+                        Long unreadCount = notificationService.unreadCount(users.get(0).getId());
+                        /*存入session以“unreadCount*/
+                        request.getSession().setAttribute("unreadCount",unreadCount);
                     }
                     break;
                 }

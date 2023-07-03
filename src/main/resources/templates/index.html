@@ -11,7 +11,7 @@
 </head>
 <script type="application/javascript">
     window.onload = function () {
-        debugger;//前端的调试：这里是一断点
+        // debugger;//前端的调试：这里是一断点
         var closable = window.localStorage.getItem("closable");
         if (closable == "true") {
             window.close();//关掉窗口
@@ -30,7 +30,7 @@
             <!--一个添加图标，右边是目标名称-->
             <h2><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> 发现 </h2>
             <hr>
-            <div class="media" th:each="question : ${pagination.questions}">
+            <div class="media" th:each="question : ${pagination.data}">
                 <div class="media-left">
                     <a href="#">
                         <!--                        <span th:text="${question.user.avatarUrl}"></span>-->

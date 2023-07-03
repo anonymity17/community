@@ -22,56 +22,103 @@
             <!--一个添加图标，右边是目标名称-->
             <h2><span th:text="${sectionName}"></span></h2>
             <hr>
-            <div class="media" th:each="question : ${pagination.questions}">
-                <div class="media-left">
-                    <a href="#">
-                        <img class="media-object" th:src="${question.user.avatarUrl}">
-                    </a>
-                </div>
-                <!--                <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}"></a>-->
-                <div class="media-body">
-                    <h4 class="media-heading" th:text="${question.title}"></h4>
-                    <span class="text-desc"><span th:text="${question.commentCount}"></span>个回复 ·
+            <!--问题列表-->
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'questions'}">
+                <div class="media" th:each="question : ${pagination.data}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object" th:src="${question.user.avatarUrl}">
+                        </a>
+                    </div>
+                    <!--                <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}"></a>-->
+                    <div class="media-body">
+                        <h4 class="media-heading" th:text="${question.title}"></h4>
+                        <span class="text-desc">
+                            <span th:text="${question.commentCount}"></span>个回复 ·
                             <span th:text="${question.viewCount}"></span>个浏览 ·
-                        <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>·
-                        <a th:href="@{'/publish/'+${question.id}}" class="community-menu"
-                           th:if="${session.user != null && session.user.id == question.creator}">
-                        <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
-                    </a>
-                    </span>
+                            <span th:text="${#dates.format(question.gmtCreate,'yyyy-MM-dd HH:mm')}"></span>·
+                            <a th:href="@{'/publish/'+${question.id}}" class="community-menu"
+                               th:if="${session.user != null && session.user.id == question.creator}">
+                            <span class="glyphicon glyphicon-pencil" aria-hidden="true">编辑</span>
+                            </a>
+                        </span>
+                    </div>
                 </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li th:if="${pagination.showFirstPage}">
+                            <a th:href="@{'/profile/'+${section}(page=${1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;&lt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showPrevious}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+
+                        </li>
+                        <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''">
+                            <!--第二个page是上面each中的-->
+                            <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}">
+
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showNext}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.page+1})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showEndPage}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.totalPage})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt;&gt;</span><!--">"的转义为"&gt;"-->
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination">
-                    <li th:if="${pagination.showFirstPage}">
-                        <a th:href="@{'/profile/'+${section}(page=${1})}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;&lt;</span>
-                        </a>
-                    </li>
-                    <li th:if="${pagination.showPrevious}">
-                        <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}" aria-label="Previous">
-                            <span aria-hidden="true">&lt;</span>
-                        </a>
+            <!--通知列表-->
+            <div class="col-lg-9 col-md-12 col-sm-12 col-xs-12" th:if="${section == 'replies'}">
+                <div class="media" th:each="notification : ${pagination.data}">
+                    <div class="media-body">
+                        <p class="media-heading">
+                            <span th:text="${notification.notifierName + '' + notification.typeName + ' '}"></span>
+                           <a th:href="@{'/notification/'+${notification.id}}" th:text="${notification.outerTitle}"></a>
+                            <span class="label label-danger" th:if="${notification.status == 0}" >未读</span>
+                        </p>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li th:if="${pagination.showFirstPage}">
+                            <a th:href="@{'/profile/'+${section}(page=${1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;&lt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showPrevious}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.page -1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
 
-                    </li>
-                    <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''">
-                        <!--第二个page是上面each中的-->
-                        <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}">
+                        </li>
+                        <li th:each="page : ${pagination.pages}" th:class="${pagination.page == page} ? 'active' : ''">
+                            <!--第二个page是上面each中的-->
+                            <a th:href="@{'/profile/'+${section}(page=${page})}" th:text="${page}">
 
-                        </a>
-                    </li>
-                    <li th:if="${pagination.showNext}">
-                        <a th:href="@{'/profile/'+${section}(page=${pagination.page+1})}" aria-label="Previous">
-                            <span aria-hidden="true">&gt;</span>
-                        </a>
-                    </li>
-                    <li th:if="${pagination.showEndPage}">
-                        <a th:href="@{'/profile/'+${section}(page=${pagination.totalPage})}" aria-label="Previous">
-                            <span aria-hidden="true">&gt;&gt;</span><!--">"的转义为"&gt;"-->
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showNext}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.page+1})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${pagination.showEndPage}">
+                            <a th:href="@{'/profile/'+${section}(page=${pagination.totalPage})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt;&gt;</span><!--">"的转义为"&gt;"-->
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12 ">
             <div class="list-group section">
@@ -82,7 +129,7 @@
 
                 <a href="/profile/replies" th:class="${section=='replies'}? 'active list-group-item':'list-group-item'">
                     最新回复
-                    <span class="badge">14</span>
+                    <span class="badge" th:text="${session.unreadCount}"></span>
                 </a>
             </div>
         </div>

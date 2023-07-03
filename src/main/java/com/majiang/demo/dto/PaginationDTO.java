@@ -10,8 +10,9 @@ import java.util.List;
  * 这个就是页面中的各种元素
  */
 @Data
-public class PaginationDTO {
-    private List<QuestionDTO> questions;
+public class PaginationDTO<T> {
+//    private List<QuestionDTO> questions;
+    private List<T> data;
     private boolean showPrevious;//"<"上一页的标识按钮，当访问第一页就不会出现这个按钮
     private boolean showFirstPage;//"<<" 能够回到第一个的按钮
     private boolean showNext;//">" 下一页的按钮

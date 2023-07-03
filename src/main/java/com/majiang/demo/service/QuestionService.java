@@ -74,19 +74,18 @@ public class QuestionService {
             questionDTOList.add(questionDTO);
         }
 //        return questionDTOList;
-        paginationDTOS.setQuestions(questionDTOList);
+        paginationDTOS.setData(questionDTOList);
         return paginationDTOS;
     }
 
     //获取个人全部的问题列表=》“我的问题”
     public PaginationDTO list(Long userId, Integer page, Integer size) {
-        PaginationDTO paginationDTOS = new PaginationDTO();
+        PaginationDTO<QuestionDTO> paginationDTOS = new PaginationDTO<>();
         //获取个人页面中所有的问题条数
         QuestionExample example = new QuestionExample();
         example.createCriteria()
                 .andCreatorEqualTo(userId);
         Integer totalCount = (int) questionMapper.countByExample(example);
-
         //使用方法将所有的参数传入
         paginationDTOS.setPagination(totalCount, page, size);
         //对于page越界的处理
@@ -115,9 +114,7 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-
-//        return questionDTOList;
-        paginationDTOS.setQuestions(questionDTOList);
+        paginationDTOS.setData(questionDTOList);
         return paginationDTOS;
     }
 
