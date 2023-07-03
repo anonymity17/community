@@ -3,7 +3,8 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+logs/
+###git提交会忽略掉的东西###
 ### STS ###
 .apt_generated
 .classpath
