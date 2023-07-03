@@ -153,7 +153,8 @@
                     <div class="media">
                         <div class="media-left">
                             <a href="#">
-                                <img class="media-object" th:src="${session.user != null ? session.user.avatarUrl : '/img/default.png'}">
+                                <img class="media-object"
+                                     th:src="${session.user != null ? session.user.avatarUrl : '/img/default.png'}">
                             </a>
                         </div>
                         <div class="media-body">
@@ -210,5 +211,7 @@
             </hr>
         </div>
     </div>
+</div>
+<div th:insert="~{footer::foot}"></div>
 </body>
 </html>
